@@ -6,7 +6,7 @@ public abstract class  Usuario {
 
 
     /// Atributos
-
+    private static int contadorid = 0;
     private int idUsuario;
 
     private String nombre;
@@ -25,9 +25,33 @@ public abstract class  Usuario {
     public Usuario() {
     }
 
+    //se me ocurre esto mejor como constructor vacio por default
+    public Usuario(){
+        this.idUsuario=null;
+        this.nombre="Usuario Nulo";
+        this.hashContrasena="";
+        this.salt="";
+        this.activo=false;
+        this.rolUsuarios=null;
+    }
 
-    public Usuario(int idUsuario, String nombre, String hashContrasena, String salt, boolean activo, RolUsuarios rolUsuarios) {
-        this.idUsuario = idUsuario;
+    //constructor para deserializar JSON:
+    public Usuario(JSONObject x){
+        this.idUsuario=x.getInt("idUsuario");
+        this.nombre=x.getString("nombre");
+        this.hashContrasena=x.getString("hashContrasena");
+        this.salt=x.getString("salt");
+        this.activo=x.getBoolean("activo");
+        if (x.has("rolUsuarios")){
+            this.rolUsuarios = RolUsuarios.valueOf(x.getString("rolUsuario").toUpperCase());
+        } else {
+            this.rolUsuarios=RolUsuarios.NORMAL; ///valor por defecto
+        }
+    }
+
+    public Usuario(String nombre, String hashContrasena, String salt, boolean activo, RolUsuarios rolUsuarios) {
+        this.contador++;
+        this.idUsuario = contador;
         this.nombre = nombre;
         this.hashContrasena = hashContrasena;
         this.salt = salt;
@@ -78,8 +102,6 @@ public abstract class  Usuario {
     public void setRolUsuarios(RolUsuarios rolUsuarios) {
         this.rolUsuarios = rolUsuarios;
     }
-
-
 
 
     /// Hash y equals
